@@ -12,11 +12,10 @@ import AddIcon from '@material-ui/icons/Add'
 import CheckIcon from '@material-ui/icons/Check'
 import CreateIcon from '@material-ui/icons/Create'
 import DeleteIcon from '@material-ui/icons/Delete'
-import {
-  createMuiTheme,
-  MuiThemeProvider,
-  withStyles,
-} from '@material-ui/core/styles'
+import ClearIcon from '@material-ui/icons/Clear'
+import createMuiTheme from '@material-ui/core/styles/createMuiTheme'
+import { ThemeProvider as MuiThemeProvider } from '@material-ui/core/styles'
+import withStyles from '@material-ui/core/styles/withStyles'
 import green from '@material-ui/core/colors/green'
 import yellow from '@material-ui/core/colors/yellow'
 import red from '@material-ui/core/colors/red'
@@ -38,12 +37,14 @@ const DeleteButton = withStyles({
 })(Button)
 
 const App = () => {
-  const [newTodo, setNewTodo] = useState('')
+  const [newTodo, setNewTodo] = useState({ todo: '', isEdit: false })
   const [todos, setTodos] = useState([])
+  const [tempEditTodo, setTempEditTodo] = useState('')
 
   const addTodo = () => {
-    if (newTodo) {
+    if (newTodo.todo) {
       setTodos([...todos, newTodo])
+      setNewTodo({ todo: '', isEdit: false })
     }
   }
 
@@ -53,8 +54,34 @@ const App = () => {
     }
   }
 
+  const handleEditMode = (i) => () => {
+    todos[i].isEdit ? setTempEditTodo('') : setTempEditTodo(todos[i].todo)
+    setTodos([
+      ...todos.slice(0, i),
+      { todo: todos[i].todo, isEdit: !todos[i].isEdit },
+      ...todos.slice(i + 1),
+    ])
+  }
+
+  const handleEdit = (i) => () => {
+    setTodos([
+      ...todos.slice(0, i),
+      { todo: tempEditTodo, isEdit: !todos[i].isEdit },
+      ...todos.slice(i + 1),
+    ])
+  }
+
   const handleDelete = (i) => () => {
     setTodos([...todos.slice(0, i), ...todos.slice(i + 1)])
+  }
+
+  const isDisabled = () => {
+    for (const todo of todos) {
+      if (todo.isEdit) {
+        return true
+      }
+    }
+    return false
   }
 
   return (
@@ -65,9 +92,11 @@ const App = () => {
       <Grid container spacing={1}>
         <Grid item xs={11}>
           <TextField
-            onChange={(e) => setNewTodo(e.target.value)}
+            onChange={(e) =>
+              setNewTodo({ todo: e.target.value, isEdit: false })
+            }
             onKeyDown={handleKeyDown}
-            value={newTodo}
+            value={newTodo.todo}
             fullWidth
             label="Add Todo"
             variant="outlined"
@@ -75,35 +104,71 @@ const App = () => {
           />
         </Grid>
         <Grid item xs={1}>
-          <Button onClick={addTodo} variant="contained">
+          <Button disabled={isDisabled()} onClick={addTodo} variant="contained">
             <AddIcon />
           </Button>
         </Grid>
         <Grid item xs={12}>
-          <MuiThemeProvider theme={theme}>
-            <List>
-              {todos.map((todo, i) => (
-                <ListItem divider key={i}>
-                  <ListItemText primary={todo} />
+          <List>
+            {todos.map(({ todo, isEdit }, i) => (
+              <ListItem divider key={i}>
+                {isEdit ? (
+                  <>
+                    <TextField
+                      fullWidth
+                      label="Edit Todo"
+                      variant="outlined"
+                      size="small"
+                      value={tempEditTodo}
+                      onChange={(e) => setTempEditTodo(e.target.value)}
+                    />
+                    <MuiThemeProvider theme={theme}>
+                      <ButtonGroup
+                        variant="contained"
+                        aria-label="contained primary button group"
+                        style={{ marginLeft: 8 }}
+                      >
+                        <Button onClick={handleEdit(i)} color="secondary">
+                          <CreateIcon />
+                        </Button>
+                        <DeleteButton onClick={handleEditMode(i)}>
+                          <ClearIcon />
+                        </DeleteButton>
+                      </ButtonGroup>
+                    </MuiThemeProvider>
+                  </>
+                ) : (
+                  <>
+                    <MuiThemeProvider theme={theme}>
+                      <ListItemText primary={todo} />
 
-                  <ButtonGroup
-                    variant="contained"
-                    aria-label="contained primary button group"
-                  >
-                    <Button color="primary">
-                      <CheckIcon />
-                    </Button>
-                    <Button color="secondary">
-                      <CreateIcon />
-                    </Button>
-                    <DeleteButton onClick={handleDelete(i)} color="default">
-                      <DeleteIcon />
-                    </DeleteButton>
-                  </ButtonGroup>
-                </ListItem>
-              ))}
-            </List>
-          </MuiThemeProvider>
+                      <ButtonGroup
+                        variant="contained"
+                        aria-label="contained primary button group"
+                      >
+                        <Button disabled={isDisabled()} color="primary">
+                          <CheckIcon />
+                        </Button>
+                        <Button
+                          disabled={isDisabled()}
+                          onClick={handleEditMode(i)}
+                          color="secondary"
+                        >
+                          <CreateIcon />
+                        </Button>
+                        <DeleteButton
+                          disabled={isDisabled()}
+                          onClick={handleDelete(i)}
+                        >
+                          <DeleteIcon />
+                        </DeleteButton>
+                      </ButtonGroup>
+                    </MuiThemeProvider>
+                  </>
+                )}
+              </ListItem>
+            ))}
+          </List>
         </Grid>
       </Grid>
     </Container>
