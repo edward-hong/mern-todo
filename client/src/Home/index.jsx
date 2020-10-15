@@ -36,7 +36,7 @@ const DeleteButton = withStyles({
   },
 })(Button)
 
-const App = () => {
+const Home = () => {
   const [newTodo, setNewTodo] = useState({ todo: '', isEdit: false })
   const [todos, setTodos] = useState([])
   const [tempEditTodo, setTempEditTodo] = useState('')
@@ -175,4 +175,4 @@ const App = () => {
   )
 }
 
-export default App
+export default Home
