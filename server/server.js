@@ -1,12 +1,10 @@
 const express = require('express')
 
+const authRoutes = require('./routes/auth')
+
 const app = express()
 
-app.get('/api/signup', (req, res) => {
-  res.json({
-    data: 'You hit signup endpoint',
-  })
-})
+app.use('/api', authRoutes)
 
 const PORT = process.env.PORT || 5000
 
