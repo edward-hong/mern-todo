@@ -8,6 +8,16 @@ const authRoutes = require('./routes/auth')
 
 const app = express()
 
+mongoose
+  .connect(process.env.MONGO_URL, {
+    useNewUrlParser: true,
+    useFindAndModify: false,
+    useUnifiedTopology: true,
+    useCreateIndex: true,
+  })
+  .then(() => console.log('DB Connected'))
+  .catch((err) => console.log(`DB connection error: ${err.message}`))
+
 app.use(morgan('dev'))
 app.use(express.json())
 
