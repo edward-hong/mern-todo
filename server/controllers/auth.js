@@ -2,6 +2,7 @@ const jwt = require('jsonwebtoken')
 const sgMail = require('@sendgrid/mail')
 
 const User = require('../models/user')
+const user = require('../models/user')
 
 // exports.signup = (req, res) => {
 //   const { name, email, password } = req.body
@@ -118,4 +119,41 @@ exports.accountActivation = (req, res) => {
       message: 'Something went wrong. Try again.',
     })
   }
+}
+
+exports.signin = (req, res) => {
+  const { email, password } = req.body
+
+  User.findOne({ email })
+    .then((foundUser) => {
+      if (!foundUser) {
+        return res.status(400).json({
+          error: 'User with that email does not exist. Please signup',
+        })
+      }
+
+      // authenticate
+      if (!foundUser.authenticate(password)) {
+        return res.status(400).json({
+          error: 'Email and password do not match',
+        })
+      }
+
+      // generate a token and send to client
+      const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET, {
+        expiresIn: '7d',
+      })
+      const { _id, name, email, role } = foundUser
+
+      return res.json({
+        token,
+        user: { _id, name, email, role },
+      })
+    })
+    .catch((err) => {
+      console.log('SIGNIN USER ERROR', err)
+      return res.json({
+        error: 'User with that email does not exist. Please signup',
+      })
+    })
 }
