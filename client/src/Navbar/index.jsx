@@ -32,7 +32,7 @@ const Navbar = () => {
             </Link>
           </Typography>
 
-          <Button component="Link" color="inherit">
+          <Button color="inherit">
             <Link className={classes.navLink} to="/signup">
               Signup
             </Link>

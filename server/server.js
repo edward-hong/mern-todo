@@ -25,7 +25,7 @@ if ((process.env.NODE_ENV = 'development')) {
   app.use(cors({ origin: process.env.CLIENT_URL }))
 }
 
-app.use('/api', authRoutes)
+app.use('/auth', authRoutes)
 
 const PORT = process.env.PORT || 5000
 
