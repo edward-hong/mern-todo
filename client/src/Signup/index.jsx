@@ -5,9 +5,8 @@ import TextField from '@material-ui/core/TextField'
 import Alert from '@material-ui/lab/Alert'
 import Snackbar from '@material-ui/core/Snackbar'
 import Grid from '@material-ui/core/Grid'
-import axios from 'axios'
-
 import Button from '@material-ui/core/Button'
+import axios from 'axios'
 
 const Signup = () => {
   const [name, setName] = useState('')
