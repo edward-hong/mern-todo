@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { Redirect } from 'react-router-dom'
 import Container from '@material-ui/core/Container'
 import Typography from '@material-ui/core/Typography'
 import TextField from '@material-ui/core/TextField'
@@ -7,6 +8,8 @@ import Snackbar from '@material-ui/core/Snackbar'
 import Grid from '@material-ui/core/Grid'
 import Button from '@material-ui/core/Button'
 import axios from 'axios'
+
+import { authenticate, isAuth } from '../utils/helpers'
 
 const Signin = () => {
   const [email, setEmail] = useState('')
@@ -33,11 +36,14 @@ const Signin = () => {
     })
       .then((response) => {
         console.log(('SIGNIN SUCCESS', response))
-        setEmail('')
-        setPassword('')
-        setSeverity('success')
-        setToastMsg(`Welcome ${response.data.user.name}`)
-        setOpen(true)
+
+        authenticate(response, () => {
+          setEmail('')
+          setPassword('')
+          setSeverity('success')
+          setToastMsg(`Welcome ${response.data.user.name}`)
+          setOpen(true)
+        })
       })
       .catch((error) => {
         console.error('SIGNIN ERROR', error.response.data)
@@ -96,6 +102,7 @@ const Signin = () => {
           {toastMsg}
         </Alert>
       </Snackbar>
+      {isAuth() ? <Redirect to="/" /> : null}
     </Container>
   )
 }

@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { Redirect } from 'react-router-dom'
 import Container from '@material-ui/core/Container'
 import Typography from '@material-ui/core/Typography'
 import TextField from '@material-ui/core/TextField'
@@ -7,6 +8,8 @@ import Snackbar from '@material-ui/core/Snackbar'
 import Grid from '@material-ui/core/Grid'
 import Button from '@material-ui/core/Button'
 import axios from 'axios'
+
+import { isAuth } from '../utils/helpers'
 
 const Signup = () => {
   const [name, setName] = useState('')
@@ -109,6 +112,7 @@ const Signup = () => {
           {toastMsg}
         </Alert>
       </Snackbar>
+      {isAuth() ? <Redirect to="/" /> : null}
     </Container>
   )
 }

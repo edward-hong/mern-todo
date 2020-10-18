@@ -6,7 +6,9 @@ import Typography from '@material-ui/core/Typography'
 import Button from '@material-ui/core/Button'
 import { Link } from 'react-router-dom'
 
-const useStyles = makeStyles((theme) => ({
+import { isAuth } from '../utils/helpers'
+
+const useStyles = makeStyles(() => ({
   root: {
     flexGrow: 1,
   },
@@ -32,16 +34,22 @@ const Navbar = () => {
             </Link>
           </Typography>
 
-          <Button color="inherit">
-            <Link className={classes.navLink} to="/signup">
-              Signup
-            </Link>
-          </Button>
-          <Button color="inherit">
-            <Link className={classes.navLink} to="/signin">
-              Signin
-            </Link>
-          </Button>
+          {isAuth ? (
+            <Button color="inherit">Signout</Button>
+          ) : (
+            <>
+              <Button color="inherit">
+                <Link className={classes.navLink} to="/signup">
+                  Signup
+                </Link>
+              </Button>
+              <Button color="inherit">
+                <Link className={classes.navLink} to="/signin">
+                  Signin
+                </Link>
+              </Button>
+            </>
+          )}
         </Toolbar>
       </AppBar>
     </div>
