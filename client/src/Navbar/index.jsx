@@ -4,9 +4,9 @@ import AppBar from '@material-ui/core/AppBar'
 import Toolbar from '@material-ui/core/Toolbar'
 import Typography from '@material-ui/core/Typography'
 import Button from '@material-ui/core/Button'
-import { Link } from 'react-router-dom'
+import { Link, useHistory } from 'react-router-dom'
 
-import { isAuth } from '../utils/helpers'
+import { isAuth, signout } from '../utils/helpers'
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -23,6 +23,13 @@ const useStyles = makeStyles(() => ({
 
 const Navbar = () => {
   const classes = useStyles()
+  const history = useHistory()
+
+  const handleSignout = () => {
+    signout(() => {
+      history.push('/signin')
+    })
+  }
 
   return (
     <div className={classes.root}>
@@ -35,7 +42,9 @@ const Navbar = () => {
           </Typography>
 
           {isAuth ? (
-            <Button color="inherit">Signout</Button>
+            <Button color="inherit" onClick={handleSignout}>
+              Signout
+            </Button>
           ) : (
             <>
               <Button color="inherit">
