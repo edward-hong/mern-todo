@@ -21,10 +21,6 @@ const userSchema = new mongoose.Schema(
       required: true,
     },
     salt: String,
-    role: {
-      type: String,
-      default: 'subscriber',
-    },
     resetPasswordLink: {
       data: String,
       default: '',
