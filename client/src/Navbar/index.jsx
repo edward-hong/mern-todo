@@ -41,7 +41,7 @@ const Navbar = () => {
             </Link>
           </Typography>
 
-          {isAuth ? (
+          {isAuth() ? (
             <Button color="inherit" onClick={handleSignout}>
               Signout
             </Button>

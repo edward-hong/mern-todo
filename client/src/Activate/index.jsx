@@ -10,7 +10,6 @@ import axios from 'axios'
 const Activate = ({ match }) => {
   const [name, setName] = useState('')
   const [token, setToken] = useState('')
-  const [show, setShow] = useState(true)
   const [severity, setSeverity] = useState('success')
   const [open, setOpen] = useState(false)
   const [toastMsg, setToastMsg] = useState('')
@@ -36,7 +35,6 @@ const Activate = ({ match }) => {
     })
       .then((response) => {
         console.log(('ACCOUNT ACTIVATION SUCCESS', response))
-        setShow(false)
         setSeverity('success')
         setToastMsg(response.data.message)
         setOpen(true)
