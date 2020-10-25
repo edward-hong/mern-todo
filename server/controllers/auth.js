@@ -193,4 +193,46 @@ exports.forgotPassword = (req, res) => {
 
 exports.resetPassword = (req, res) => {
   const { resetPasswordLink, newPassword } = req.body
+
+  if (resetPasswordLink) {
+    jwt.verify(
+      resetPasswordLink,
+      process.env.JWT_RESET_PASSWORD,
+      (err, decoded) => {
+        if (err) {
+          return res.status(400).json({
+            error: 'Expired link. Try again',
+          })
+        }
+
+        User.findOne({ resetPasswordLink })
+          .then((foundUser) => {
+            if (!foundUser) {
+              return res.status(400).json({
+                error: 'Could not find user with reset password link',
+              })
+            }
+
+            foundUser.password = newPassword
+            foundUser.resetPasswordLink = ''
+
+            foundUser
+              .save()
+              .then((result) => {
+                res.json({
+                  message: 'Great! Now you can login with your new password',
+                })
+              })
+              .catch((err) => {
+                res.status(400).json({ error: 'Error resetting user password' })
+              })
+          })
+          .catch((err) => {
+            return res.status(400).json({
+              error: 'Something went wrong. Try later',
+            })
+          })
+      },
+    )
+  }
 }
