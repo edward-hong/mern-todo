@@ -159,17 +159,27 @@ exports.forgotPassword = (req, res) => {
           `,
         }
 
-        sgMail
-          .send(emailData)
-          .then((sent) => {
-            return res.json({
-              message: `Email has been sent to ${email}. Follow the instructions to activate your account.`,
-            })
+        return foundUser
+          .updateOne({ resetPasswordLink: token })
+          .then(() => {
+            sgMail
+              .send(emailData)
+              .then((sent) => {
+                return res.json({
+                  message: `Email has been sent to ${email}. Follow the instructions to activate your account.`,
+                })
+              })
+              .catch((err) => {
+                console.log('SIGNUP EMAIL SENT ERROR', err)
+                return res.json({
+                  message: err.message,
+                })
+              })
           })
-          .catch((err) => {
-            console.log('SIGNUP EMAIL SENT ERROR', err)
-            return res.json({
-              message: err.message,
+          .catch(() => {
+            return res.status(400).json({
+              error:
+                'Database connection error on user password forgot request',
             })
           })
       }
@@ -181,4 +191,6 @@ exports.forgotPassword = (req, res) => {
     })
 }
 
-exports.resetPassword = (req, res) => {}
+exports.resetPassword = (req, res) => {
+  const { resetPasswordLink, newPassword } = req.body
+}
