@@ -166,7 +166,7 @@ exports.forgotPassword = (req, res) => {
               .send(emailData)
               .then((sent) => {
                 return res.json({
-                  message: `Email has been sent to ${email}. Follow the instructions to activate your account.`,
+                  message: `Email has been sent to ${email}. Follow the instructions to reset your password.`,
                 })
               })
               .catch((err) => {

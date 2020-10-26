@@ -6,6 +6,7 @@ import Home from '../Home'
 import Signup from '../Signup'
 import Signin from '../Signin'
 import Navbar from '../Navbar'
+import Forgot from '../Forgot'
 import Activate from '../Activate'
 
 const App = () => (
@@ -15,6 +16,7 @@ const App = () => (
       <PrivateRoute exact path="/" component={Home} />
       <Route path="/signup" component={Signup} />
       <Route path="/signin" component={Signin} />
+      <Route path="/forgot" component={Forgot} />
       <Route path="/auth/activate/:token" component={Activate} />
     </Switch>
   </BrowserRouter>

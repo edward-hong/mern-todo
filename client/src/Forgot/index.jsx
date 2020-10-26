@@ -1,22 +1,39 @@
 import React, { useState } from 'react'
-import { Redirect, Link } from 'react-router-dom'
 import Container from '@material-ui/core/Container'
 import Typography from '@material-ui/core/Typography'
 import TextField from '@material-ui/core/TextField'
-import Alert from '@material-ui/lab/Alert'
-import Snackbar from '@material-ui/core/Snackbar'
 import Grid from '@material-ui/core/Grid'
 import Button from '@material-ui/core/Button'
+import Alert from '@material-ui/lab/Alert'
+import Snackbar from '@material-ui/core/Snackbar'
 import axios from 'axios'
 
-import { authenticate, isAuth } from '../utils/helpers'
-
-const Signin = () => {
+const Forgot = () => {
   const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
   const [severity, setSeverity] = useState('success')
   const [open, setOpen] = useState(false)
   const [toastMsg, setToastMsg] = useState('')
+
+  const handleSubmit = (e) => {
+    e.preventDefault()
+    axios({
+      method: 'PUT',
+      url: `${process.env.REACT_APP_AUTH}/forgot-password`,
+      data: { email },
+    })
+      .then((response) => {
+        setEmail('')
+        setSeverity('success')
+        setToastMsg(response.data.message)
+        setOpen(true)
+      })
+      .catch((error) => {
+        console.error('FORGOT PASSWORD ERROR', error.response.data)
+        setSeverity('error')
+        setToastMsg(error.response.data.error)
+        setOpen(true)
+      })
+  }
 
   const handleClose = (event, reason) => {
     if (reason === 'clickaway') {
@@ -26,31 +43,10 @@ const Signin = () => {
     setOpen(false)
   }
 
-  const handleSubmit = (e) => {
-    e.preventDefault()
-
-    axios({
-      method: 'POST',
-      url: `${process.env.REACT_APP_AUTH}/signin`,
-      data: { email, password },
-    })
-      .then((response) => {
-        authenticate(response, () => {
-          setEmail('')
-        })
-      })
-      .catch((error) => {
-        console.error('SIGNIN ERROR', error.response.data)
-        setSeverity('error')
-        setToastMsg(error.response.data.error)
-        setOpen(true)
-      })
-  }
-
   return (
     <Container maxWidth="sm">
       <Typography align="center" variant="h2" component="h1">
-        Signin
+        Forgot Password
       </Typography>
       <form onSubmit={handleSubmit}>
         <Grid container spacing={1}>
@@ -65,23 +61,9 @@ const Signin = () => {
               onChange={(e) => setEmail(e.target.value)}
             />
           </Grid>
-          <Grid item xs={12}>
-            <TextField
-              fullWidth
-              label="Password"
-              variant="outlined"
-              size="small"
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
-          </Grid>
           <Button type="submit" fullWidth variant="contained" color="primary">
-            Signin
+            Reset Password
           </Button>
-          <Typography align="right" component="p">
-            Forgot Password? Click <Link to="/forgot">here</Link>
-          </Typography>
         </Grid>
       </form>
       <Snackbar
@@ -99,9 +81,8 @@ const Signin = () => {
           {toastMsg}
         </Alert>
       </Snackbar>
-      {isAuth() ? <Redirect to="/" /> : null}
     </Container>
   )
 }
 
-export default Signin
+export default Forgot
