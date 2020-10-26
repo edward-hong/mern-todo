@@ -36,7 +36,6 @@ const Signup = () => {
       data: { name, email, password },
     })
       .then((response) => {
-        console.log(('SIGNUP SUCCESS', response))
         setName('')
         setEmail('')
         setPassword('')

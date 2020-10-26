@@ -35,14 +35,8 @@ const Signin = () => {
       data: { email, password },
     })
       .then((response) => {
-        console.log(('SIGNIN SUCCESS', response))
-
         authenticate(response, () => {
           setEmail('')
-          setPassword('')
-          setSeverity('success')
-          setToastMsg(`Welcome ${response.data.user.name}`)
-          setOpen(true)
         })
       })
       .catch((error) => {

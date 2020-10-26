@@ -1,10 +1,10 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { makeStyles } from '@material-ui/core/styles'
 import AppBar from '@material-ui/core/AppBar'
 import Toolbar from '@material-ui/core/Toolbar'
 import Typography from '@material-ui/core/Typography'
 import Button from '@material-ui/core/Button'
-import { Link, useHistory } from 'react-router-dom'
+import { Link, useHistory, useLocation } from 'react-router-dom'
 
 import { isAuth, signout } from '../utils/helpers'
 
@@ -24,9 +24,18 @@ const useStyles = makeStyles(() => ({
 const Navbar = () => {
   const classes = useStyles()
   const history = useHistory()
+  const { pathname } = useLocation()
+  const [isLoggedIn, setIsLoggedIn] = useState(isAuth())
+
+  const userInfo = localStorage.getItem('user')
+
+  useEffect(() => {
+    userInfo ? setIsLoggedIn(true) : setIsLoggedIn(false)
+  }, [pathname, userInfo])
 
   const handleSignout = () => {
     signout(() => {
+      setIsLoggedIn(false)
       history.push('/signin')
     })
   }
@@ -41,7 +50,7 @@ const Navbar = () => {
             </Link>
           </Typography>
 
-          {isAuth() ? (
+          {isLoggedIn ? (
             <Button color="inherit" onClick={handleSignout}>
               Signout
             </Button>
