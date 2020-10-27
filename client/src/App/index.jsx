@@ -2,6 +2,7 @@ import React from 'react'
 import { BrowserRouter, Switch, Route } from 'react-router-dom'
 
 import PrivateRoute from '../PrivateRoute'
+import PublicRoute from '../PublicRoute'
 import Home from '../Home'
 import Signup from '../Signup'
 import Signin from '../Signin'
@@ -17,9 +18,9 @@ const App = () => (
       <PrivateRoute exact path="/" component={Home} />
       <Route path="/signup" component={Signup} />
       <Route path="/signin" component={Signin} />
-      <Route path="/forgot" component={Forgot} />
-      <Route path="/auth/password/reset/:token" component={Reset} />
-      <Route path="/auth/activate/:token" component={Activate} />
+      <PublicRoute path="/forgot" component={Forgot} />
+      <PublicRoute path="/auth/password/reset/:token" component={Reset} />
+      <PublicRoute path="/auth/activate/:token" component={Activate} />
     </Switch>
   </BrowserRouter>
 )
