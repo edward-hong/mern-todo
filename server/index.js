@@ -1,6 +1,5 @@
 require('dotenv').config()
 const express = require('express')
-const morgan = require('morgan')
 const cors = require('cors')
 const mongoose = require('mongoose')
 
@@ -18,10 +17,11 @@ mongoose
   .then(() => console.log('DB Connected'))
   .catch((err) => console.log(`DB connection error: ${err.message}`))
 
-app.use(morgan('dev'))
 app.use(express.json())
 
-if ((process.env.NODE_ENV = 'development')) {
+if (process.env.NODE_ENV === 'development') {
+  const morgan = require('morgan')
+  app.use(morgan('dev'))
   app.use(cors({ origin: process.env.CLIENT_URL }))
 }
 
