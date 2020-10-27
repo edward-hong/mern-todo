@@ -31,7 +31,7 @@ const Signin = () => {
 
     axios({
       method: 'POST',
-      url: `${process.env.REACT_APP_AUTH}/signin`,
+      url: '/auth/signin',
       data: { email, password },
     })
       .then((response) => {

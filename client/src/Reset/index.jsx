@@ -37,7 +37,7 @@ const Reset = () => {
     console.log(token)
     axios({
       method: 'PUT',
-      url: `${process.env.REACT_APP_AUTH}/reset-password`,
+      url: '/auth/reset-password',
       data: { newPassword, resetPasswordLink: token },
     })
       .then((response) => {

@@ -30,11 +30,10 @@ const Activate = ({ match }) => {
   const handleSubmit = () => {
     axios({
       method: 'POST',
-      url: `${process.env.REACT_APP_AUTH}/activation`,
+      url: '/auth/activation',
       data: { token },
     })
       .then((response) => {
-        console.log(('ACCOUNT ACTIVATION SUCCESS', response))
         setSeverity('success')
         setToastMsg(response.data.message)
         setOpen(true)

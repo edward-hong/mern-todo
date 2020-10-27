@@ -19,8 +19,8 @@ const App = () => (
       <Route path="/signup" component={Signup} />
       <Route path="/signin" component={Signin} />
       <PublicRoute path="/forgot" component={Forgot} />
-      <PublicRoute path="/auth/password/reset/:token" component={Reset} />
-      <PublicRoute path="/auth/activate/:token" component={Activate} />
+      <PublicRoute path="/reset/:token" component={Reset} />
+      <PublicRoute path="/activate/:token" component={Activate} />
     </Switch>
   </BrowserRouter>
 )

@@ -18,7 +18,7 @@ const Forgot = () => {
     e.preventDefault()
     axios({
       method: 'PUT',
-      url: `${process.env.REACT_APP_AUTH}/forgot-password`,
+      url: '/auth/forgot-password',
       data: { email },
     })
       .then((response) => {

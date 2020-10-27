@@ -27,7 +27,7 @@ exports.signup = (req, res) => {
         subject: 'Account activation link',
         html: `
           <h1>Please use the following link to activate your account</h1>
-          <p>${process.env.CLIENT_URL}/auth/activate/${token}</p>
+          <p>${process.env.CLIENT_URL}/activate/${token}</p>
           <hr />
           <p>This email may contain sensitive information</p>
           <p>${process.env.CLIENT_URL}</p>
@@ -152,7 +152,7 @@ exports.forgotPassword = (req, res) => {
           subject: 'Password Reset Link',
           html: `
             <h1>Please use the following link to reset your password</h1>
-            <p>${process.env.CLIENT_URL}/auth/password/reset/${token}</p>
+            <p>${process.env.CLIENT_URL}/reset/${token}</p>
             <hr />
             <p>This email may contain sensitive information</p>
             <p>${process.env.CLIENT_URL}</p>
@@ -204,8 +204,6 @@ exports.resetPassword = (req, res) => {
             error: 'Expired link. Try again',
           })
         }
-
-        console.log(resetPasswordLink)
 
         User.findOne({ resetPasswordLink })
           .then((foundUser) => {

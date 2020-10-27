@@ -32,7 +32,7 @@ const Signup = () => {
 
     axios({
       method: 'POST',
-      url: `${process.env.REACT_APP_AUTH}/signup`,
+      url: '/auth/signup',
       data: { name, email, password },
     })
       .then((response) => {
