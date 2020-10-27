@@ -205,6 +205,8 @@ exports.resetPassword = (req, res) => {
           })
         }
 
+        console.log(resetPasswordLink)
+
         User.findOne({ resetPasswordLink })
           .then((foundUser) => {
             if (!foundUser) {
