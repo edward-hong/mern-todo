@@ -4,6 +4,7 @@ const cors = require('cors')
 const mongoose = require('mongoose')
 
 const authRoutes = require('./routes/auth')
+const todoRoutes = require('./routes/todo')
 
 const app = express()
 
@@ -26,6 +27,7 @@ if (process.env.NODE_ENV === 'development') {
 }
 
 app.use('/auth', authRoutes)
+app.use('/todo', todoRoutes)
 
 if (process.env.NODE_ENV === 'production') {
   app.use(express.static('client/build'))
