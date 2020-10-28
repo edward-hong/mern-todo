@@ -35,7 +35,9 @@ exports.removeTodo = (req, res) => {
 
   Todo.findByIdAndDelete(todoId)
     .then((deletedTodo) => {
-      res.status(200).json({ deletedTodo })
+      res
+        .status(200)
+        .json({ deletedTodo, message: 'Todo removed successfully' })
     })
     .catch((err) => {
       res.status(400).send('Todo remove failed')
@@ -47,7 +49,7 @@ exports.editTodo = (req, res) => {
 
   Todo.findByIdAndUpdate({ _id: todoId }, { todo: editedTodo }, { new: true })
     .then((updatedTodo) => {
-      res.status(200).json({ updatedTodo })
+      res.status(200).json({ updatedTodo, message: 'Todo edited successfully' })
     })
     .catch((err) => {
       res.status(400).send('Todo edit failed')
@@ -59,7 +61,9 @@ exports.completeTodo = (req, res) => {
 
   Todo.findByIdAndUpdate({ _id: todoId }, { completed: true }, { new: true })
     .then((completedTodo) => {
-      res.status(200).json({ completedTodo })
+      res
+        .status(200)
+        .json({ completedTodo, message: 'Todo completed successfully' })
     })
     .catch((err) => {
       res.status(400).send('Todo complete failed')

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import Container from '@material-ui/core/Container'
 import Typography from '@material-ui/core/Typography'
 import TextField from '@material-ui/core/TextField'
@@ -13,12 +13,15 @@ import CheckIcon from '@material-ui/icons/Check'
 import CreateIcon from '@material-ui/icons/Create'
 import DeleteIcon from '@material-ui/icons/Delete'
 import ClearIcon from '@material-ui/icons/Clear'
+import Alert from '@material-ui/lab/Alert'
+import Snackbar from '@material-ui/core/Snackbar'
 import createMuiTheme from '@material-ui/core/styles/createMuiTheme'
 import { ThemeProvider as MuiThemeProvider } from '@material-ui/core/styles'
 import withStyles from '@material-ui/core/styles/withStyles'
 import green from '@material-ui/core/colors/green'
 import yellow from '@material-ui/core/colors/yellow'
 import red from '@material-ui/core/colors/red'
+import axios from 'axios'
 
 const theme = createMuiTheme({
   palette: {
@@ -37,15 +40,98 @@ const DeleteButton = withStyles({
 })(Button)
 
 const Home = () => {
-  const [newTodo, setNewTodo] = useState({ todo: '', isEdit: false })
+  const userId = JSON.parse(localStorage.getItem('user'))._id
+
+  const [newTodo, setNewTodo] = useState({
+    todo: '',
+    isEdit: false,
+    completed: false,
+    userId,
+  })
   const [todos, setTodos] = useState([])
+  const [completedTodos, setCompletedTodos] = useState([])
   const [tempEditTodo, setTempEditTodo] = useState('')
+  const [severity, setSeverity] = useState('success')
+  const [open, setOpen] = useState(false)
+  const [toastMsg, setToastMsg] = useState('')
+
+  useEffect(() => {
+    axios
+      .get(`/todo/${userId}`)
+      .then(({ data }) => {
+        setTodos(
+          data.todos
+            .map((todo) => {
+              todo.isEdit = false
+              return todo
+            })
+            .filter((todo) => {
+              return !todo.completed
+            }),
+        )
+        setCompletedTodos(
+          data.todos
+            .map((todo) => {
+              todo.isEdit = false
+              return todo
+            })
+            .filter((todo) => {
+              return todo.completed
+            }),
+        )
+      })
+      .catch((error) => {
+        console.error('SIGNIN ERROR', error.response.data)
+      })
+  }, [userId])
 
   const addTodo = () => {
     if (newTodo.todo) {
-      setTodos([...todos, newTodo])
-      setNewTodo({ todo: '', isEdit: false })
+      axios({
+        method: 'POST',
+        url: '/todo/add',
+        data: { userId, todo: newTodo.todo },
+      })
+        .then(({ data }) => {
+          setSeverity('success')
+          setToastMsg(data.message)
+          setOpen(true)
+          setNewTodo({
+            todo: '',
+            isEdit: false,
+            completed: false,
+            userId,
+          })
+          setTodos([...todos, data.todo])
+        })
+        .catch((error) => {
+          console.error('ADD TODO ERROR', error.response.data)
+          setSeverity('error')
+          setToastMsg(error.response.data.error)
+          setOpen(true)
+        })
     }
+  }
+
+  const handleComplete = (i, id) => () => {
+    axios({
+      method: 'PUT',
+      url: '/todo/complete',
+      data: { todoId: id },
+    })
+      .then(({ data }) => {
+        setSeverity('success')
+        setToastMsg(data.message)
+        setOpen(true)
+        setTodos([...todos.slice(0, i), ...todos.slice(i + 1)])
+        setCompletedTodos([...completedTodos, data.completedTodo])
+      })
+      .catch((error) => {
+        console.error('COMPLETE TODO ERROR', error.response.data)
+        setSeverity('error')
+        setToastMsg(error.response.data.error)
+        setOpen(true)
+      })
   }
 
   const handleKeyDown = (e) => {
@@ -58,21 +144,57 @@ const Home = () => {
     todos[i].isEdit ? setTempEditTodo('') : setTempEditTodo(todos[i].todo)
     setTodos([
       ...todos.slice(0, i),
-      { todo: todos[i].todo, isEdit: !todos[i].isEdit },
+      { ...todos[i], isEdit: !todos[i].isEdit },
       ...todos.slice(i + 1),
     ])
   }
 
-  const handleEdit = (i) => () => {
-    setTodos([
-      ...todos.slice(0, i),
-      { todo: tempEditTodo, isEdit: !todos[i].isEdit },
-      ...todos.slice(i + 1),
-    ])
+  const handleEdit = (i, id) => () => {
+    axios({
+      method: 'PUT',
+      url: '/todo/edit',
+      data: { todoId: id, editedTodo: tempEditTodo },
+    })
+      .then(({ data }) => {
+        setSeverity('success')
+        setToastMsg(data.message)
+        setOpen(true)
+        setTodos([
+          ...todos.slice(0, i),
+          { ...todos[i], todo: tempEditTodo, isEdit: !todos[i].isEdit },
+          ...todos.slice(i + 1),
+        ])
+      })
+      .catch((error) => {
+        console.error('EDIT TODO ERROR', error.response.data)
+        setSeverity('error')
+        setToastMsg(error.response.data.error)
+        setOpen(true)
+      })
   }
 
-  const handleDelete = (i) => () => {
-    setTodos([...todos.slice(0, i), ...todos.slice(i + 1)])
+  const handleDelete = (i, id) => () => {
+    axios({
+      method: 'DELETE',
+      url: `/todo/remove/${id}`,
+    })
+      .then(({ data }) => {
+        setSeverity('success')
+        setToastMsg(data.message)
+        setOpen(true)
+        data.deletedTodo.completed
+          ? setCompletedTodos([
+              ...completedTodos.slice(0, i),
+              ...completedTodos.slice(i + 1),
+            ])
+          : setTodos([...todos.slice(0, i), ...todos.slice(i + 1)])
+      })
+      .catch((error) => {
+        console.error('REMOVE TODO ERROR', error.response.data)
+        setSeverity('error')
+        setToastMsg(error.response.data.error)
+        setOpen(true)
+      })
   }
 
   const isDisabled = () => {
@@ -84,10 +206,18 @@ const Home = () => {
     return false
   }
 
+  const handleClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return
+    }
+
+    setOpen(false)
+  }
+
   return (
     <Container maxWidth="sm">
       <Typography align="center" variant="h2" component="h1">
-        Todo
+        Todo List
       </Typography>
       <Grid container spacing={1}>
         <Grid item xs={11}>
@@ -110,8 +240,8 @@ const Home = () => {
         </Grid>
         <Grid item xs={12}>
           <List>
-            {todos.map(({ todo, isEdit }, i) => (
-              <ListItem divider key={i}>
+            {todos.map(({ todo, isEdit, _id }, i) => (
+              <ListItem divider key={_id}>
                 {isEdit ? (
                   <>
                     <TextField
@@ -128,10 +258,10 @@ const Home = () => {
                         aria-label="contained primary button group"
                         style={{ marginLeft: 8 }}
                       >
-                        <Button onClick={handleEdit(i)} color="secondary">
+                        <Button onClick={handleEdit(i, _id)} color="secondary">
                           <CreateIcon />
                         </Button>
-                        <DeleteButton onClick={handleEditMode(i)}>
+                        <DeleteButton onClick={handleEditMode(i, _id)}>
                           <ClearIcon />
                         </DeleteButton>
                       </ButtonGroup>
@@ -146,7 +276,11 @@ const Home = () => {
                         variant="contained"
                         aria-label="contained primary button group"
                       >
-                        <Button disabled={isDisabled()} color="primary">
+                        <Button
+                          onClick={handleComplete(i, _id)}
+                          disabled={isDisabled()}
+                          color="primary"
+                        >
                           <CheckIcon />
                         </Button>
                         <Button
@@ -158,7 +292,7 @@ const Home = () => {
                         </Button>
                         <DeleteButton
                           disabled={isDisabled()}
-                          onClick={handleDelete(i)}
+                          onClick={handleDelete(i, _id)}
                         >
                           <DeleteIcon />
                         </DeleteButton>
@@ -170,7 +304,45 @@ const Home = () => {
             ))}
           </List>
         </Grid>
+        <Grid item xs={12}>
+          <Typography align="center" variant="h4" component="h2">
+            Completed
+          </Typography>
+          <List>
+            {completedTodos.map(({ todo, _id }, i) => {
+              return (
+                <ListItem divider key={_id}>
+                  <ListItemText
+                    primary={todo}
+                    style={{ textDecoration: 'line-through' }}
+                  />
+                  <DeleteButton
+                    disabled={isDisabled()}
+                    onClick={handleDelete(i, _id)}
+                  >
+                    <DeleteIcon />
+                  </DeleteButton>
+                </ListItem>
+              )
+            })}
+          </List>
+        </Grid>
       </Grid>
+      <Snackbar
+        anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+        open={open}
+        autoHideDuration={6000}
+        onClose={handleClose}
+      >
+        <Alert
+          elevation={6}
+          variant="filled"
+          onClose={handleClose}
+          severity={severity}
+        >
+          {toastMsg}
+        </Alert>
+      </Snackbar>
     </Container>
   )
 }
