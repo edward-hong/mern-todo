@@ -14,6 +14,14 @@
     "node": "12.16.2",
     "npm": "6.14.8"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/edward-hong/mern-todo.git"
+  },
+  "bugs": {
+    "url": "https://github.com/edward-hong/mern-todo/issues"
+  },
+  "homepage": "https://github.com/edward-hong/mern-todo#readme",
   "keywords": [
     "MongoDB",
     "Express",
