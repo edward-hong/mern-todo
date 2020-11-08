@@ -2,30 +2,29 @@ import React, { useState, useEffect } from 'react'
 import Container from '@material-ui/core/Container'
 import Typography from '@material-ui/core/Typography'
 import Button from '@material-ui/core/Button'
-import Alert from '@material-ui/lab/Alert'
-import Snackbar from '@material-ui/core/Snackbar'
 import jwt from 'jsonwebtoken'
 import axios from 'axios'
+
+import Toast from '../Toast'
+import useToast from '../hooks/useToast'
 
 const Activate = ({ match }) => {
   const [name, setName] = useState('')
   const [token, setToken] = useState('')
-  const [severity, setSeverity] = useState('success')
-  const [open, setOpen] = useState(false)
-  const [toastMsg, setToastMsg] = useState('')
+  const [
+    open,
+    setOpen,
+    severity,
+    setSeverity,
+    toastMsg,
+    setToastMsg,
+    handleClose,
+  ] = useToast()
 
   useEffect(() => {
     setToken(match.params.token)
     setName(jwt.decode(match.params.token).name)
   }, [match.params.token])
-
-  const handleClose = (event, reason) => {
-    if (reason === 'clickaway') {
-      return
-    }
-
-    setOpen(false)
-  }
 
   const handleSubmit = () => {
     axios({
@@ -59,21 +58,12 @@ const Activate = ({ match }) => {
       >
         Activate
       </Button>
-      <Snackbar
-        anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+      <Toast
         open={open}
-        autoHideDuration={6000}
-        onClose={handleClose}
-      >
-        <Alert
-          elevation={6}
-          variant="filled"
-          onClose={handleClose}
-          severity={severity}
-        >
-          {toastMsg}
-        </Alert>
-      </Snackbar>
+        handleClose={handleClose}
+        severity={severity}
+        toastMsg={toastMsg}
+      />
     </Container>
   )
 }

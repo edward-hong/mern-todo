@@ -13,8 +13,6 @@ import CheckIcon from '@material-ui/icons/Check'
 import CreateIcon from '@material-ui/icons/Create'
 import DeleteIcon from '@material-ui/icons/Delete'
 import ClearIcon from '@material-ui/icons/Clear'
-import Alert from '@material-ui/lab/Alert'
-import Snackbar from '@material-ui/core/Snackbar'
 import createMuiTheme from '@material-ui/core/styles/createMuiTheme'
 import { ThemeProvider as MuiThemeProvider } from '@material-ui/core/styles'
 import withStyles from '@material-ui/core/styles/withStyles'
@@ -22,6 +20,9 @@ import green from '@material-ui/core/colors/green'
 import yellow from '@material-ui/core/colors/yellow'
 import red from '@material-ui/core/colors/red'
 import axios from 'axios'
+
+import Toast from '../Toast'
+import useToast from '../hooks/useToast'
 
 const theme = createMuiTheme({
   palette: {
@@ -51,9 +52,15 @@ const Home = () => {
   const [todos, setTodos] = useState([])
   const [completedTodos, setCompletedTodos] = useState([])
   const [tempEditTodo, setTempEditTodo] = useState('')
-  const [severity, setSeverity] = useState('success')
-  const [open, setOpen] = useState(false)
-  const [toastMsg, setToastMsg] = useState('')
+  const [
+    open,
+    setOpen,
+    severity,
+    setSeverity,
+    toastMsg,
+    setToastMsg,
+    handleClose,
+  ] = useToast()
 
   useEffect(() => {
     axios
@@ -206,14 +213,6 @@ const Home = () => {
     return false
   }
 
-  const handleClose = (event, reason) => {
-    if (reason === 'clickaway') {
-      return
-    }
-
-    setOpen(false)
-  }
-
   return (
     <Container maxWidth="sm">
       <Typography align="center" variant="h2" component="h1">
@@ -328,21 +327,12 @@ const Home = () => {
           </List>
         </Grid>
       </Grid>
-      <Snackbar
-        anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+      <Toast
         open={open}
-        autoHideDuration={6000}
-        onClose={handleClose}
-      >
-        <Alert
-          elevation={6}
-          variant="filled"
-          onClose={handleClose}
-          severity={severity}
-        >
-          {toastMsg}
-        </Alert>
-      </Snackbar>
+        handleClose={handleClose}
+        severity={severity}
+        toastMsg={toastMsg}
+      />
     </Container>
   )
 }

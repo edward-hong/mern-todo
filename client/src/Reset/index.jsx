@@ -3,18 +3,25 @@ import { useParams } from 'react-router-dom'
 import Container from '@material-ui/core/Container'
 import Typography from '@material-ui/core/Typography'
 import TextField from '@material-ui/core/TextField'
-import Alert from '@material-ui/lab/Alert'
-import Snackbar from '@material-ui/core/Snackbar'
 import Grid from '@material-ui/core/Grid'
 import Button from '@material-ui/core/Button'
 import axios from 'axios'
 
+import Toast from '../Toast'
+import useToast from '../hooks/useToast'
+
 const Reset = () => {
   const [token, setToken] = useState('')
   const [newPassword, setNewPassword] = useState('')
-  const [severity, setSeverity] = useState('success')
-  const [open, setOpen] = useState(false)
-  const [toastMsg, setToastMsg] = useState('')
+  const [
+    open,
+    setOpen,
+    severity,
+    setSeverity,
+    toastMsg,
+    setToastMsg,
+    handleClose,
+  ] = useToast()
 
   const urlToken = useParams().token
 
@@ -23,14 +30,6 @@ const Reset = () => {
       setToken(urlToken)
     }
   }, [urlToken])
-
-  const handleClose = (event, reason) => {
-    if (reason === 'clickaway') {
-      return
-    }
-
-    setOpen(false)
-  }
 
   const handleSubmit = (e) => {
     e.preventDefault()
@@ -76,21 +75,12 @@ const Reset = () => {
           </Button>
         </Grid>
       </form>
-      <Snackbar
-        anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+      <Toast
         open={open}
-        autoHideDuration={6000}
-        onClose={handleClose}
-      >
-        <Alert
-          elevation={6}
-          variant="filled"
-          onClose={handleClose}
-          severity={severity}
-        >
-          {toastMsg}
-        </Alert>
-      </Snackbar>
+        handleClose={handleClose}
+        severity={severity}
+        toastMsg={toastMsg}
+      />
     </Container>
   )
 }
