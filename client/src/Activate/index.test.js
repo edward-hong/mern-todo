@@ -9,7 +9,7 @@ import { rest } from 'msw'
 import { setupServer } from 'msw/node'
 import jwt from 'jsonwebtoken'
 
-import Activate from './index'
+import Activate from '.'
 
 describe('Activate', () => {
   const server = setupServer(

@@ -21,7 +21,7 @@ describe('Forgot', () => {
   afterEach(() => server.resetHandlers())
   afterAll(() => server.close())
 
-  it('renders heading with user name', () => {
+  it('renders heading', () => {
     render(<Forgot />)
 
     expect(screen.getByTestId('heading')).toHaveTextContent('Forgot Password')
