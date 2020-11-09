@@ -35,7 +35,6 @@ const Forgot = () => {
         setOpen(true)
       })
       .catch((error) => {
-        console.error('FORGOT PASSWORD ERROR', error.response.data)
         setSeverity('error')
         setToastMsg(error.response.data.error)
         setOpen(true)
@@ -44,7 +43,12 @@ const Forgot = () => {
 
   return (
     <Container maxWidth="sm">
-      <Typography align="center" variant="h2" component="h1">
+      <Typography
+        data-testid="heading"
+        align="center"
+        variant="h2"
+        component="h1"
+      >
         Forgot Password
       </Typography>
       <form onSubmit={handleSubmit}>
@@ -53,6 +57,7 @@ const Forgot = () => {
             <TextField
               fullWidth
               label="Email"
+              inputProps={{ 'data-testid': 'email' }}
               variant="outlined"
               size="small"
               type="email"
@@ -60,7 +65,13 @@ const Forgot = () => {
               onChange={(e) => setEmail(e.target.value)}
             />
           </Grid>
-          <Button type="submit" fullWidth variant="contained" color="primary">
+          <Button
+            data-testid="submit"
+            type="submit"
+            fullWidth
+            variant="contained"
+            color="primary"
+          >
             Reset Password
           </Button>
         </Grid>
