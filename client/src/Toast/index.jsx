@@ -10,6 +10,7 @@ const Toast = ({ open, handleClose, severity, toastMsg }) => (
     onClose={handleClose}
   >
     <Alert
+      data-testid="toast"
       elevation={6}
       variant="filled"
       onClose={handleClose}

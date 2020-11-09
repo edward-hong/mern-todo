@@ -38,7 +38,6 @@ const Activate = ({ match }) => {
         setOpen(true)
       })
       .catch((error) => {
-        console.error('ACCOUNT ACTIVATION ERROR', error.response.data.error)
         setSeverity('error')
         setToastMsg(error.response.data.error)
         setOpen(true)
@@ -47,7 +46,12 @@ const Activate = ({ match }) => {
 
   return (
     <Container maxWidth="sm">
-      <Typography align="center" variant="h5" component="h1">
+      <Typography
+        data-testid="heading"
+        align="center"
+        variant="h5"
+        component="h1"
+      >
         Hey {name}, ready to activate your account?
       </Typography>
       <Button
