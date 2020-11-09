@@ -26,14 +26,12 @@ const Reset = () => {
   const urlToken = useParams().token
 
   useEffect(() => {
-    if (urlToken) {
-      setToken(urlToken)
-    }
+    setToken(urlToken)
   }, [urlToken])
 
   const handleSubmit = (e) => {
     e.preventDefault()
-    console.log(token)
+
     axios({
       method: 'PUT',
       url: '/auth/reset-password',
@@ -54,7 +52,12 @@ const Reset = () => {
 
   return (
     <Container maxWidth="sm">
-      <Typography align="center" variant="h2" component="h1">
+      <Typography
+        data-testid="heading"
+        align="center"
+        variant="h2"
+        component="h1"
+      >
         Reset Password
       </Typography>
       <form onSubmit={handleSubmit}>
@@ -62,6 +65,7 @@ const Reset = () => {
           <Grid item xs={12}>
             <TextField
               fullWidth
+              inputProps={{ 'data-testid': 'password' }}
               label="New Password"
               variant="outlined"
               size="small"
@@ -70,7 +74,13 @@ const Reset = () => {
               onChange={(e) => setNewPassword(e.target.value)}
             />
           </Grid>
-          <Button type="submit" fullWidth variant="contained" color="primary">
+          <Button
+            data-testid="submit"
+            type="submit"
+            fullWidth
+            variant="contained"
+            color="primary"
+          >
             Set New Password
           </Button>
         </Grid>
