@@ -22,7 +22,17 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
+    "test:coverage": "npm t -- --coverage --watchAll=false",
     "eject": "react-scripts eject"
+  },
+  "jest": {
+    "collectCoverageFrom": [
+      "src/**/*.{js,jsx}",
+      "!src/index.js",
+      "!src/setupProxy.js",
+      "!src/serviceWorker.js",
+      "!src/test-utils/**/*.js"
+    ]
   },
   "eslintConfig": {
     "extends": "react-app"
