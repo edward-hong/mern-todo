@@ -64,4 +64,16 @@ describe('Activate', () => {
 
     expect(screen.getByTestId('toast')).toBeVisible()
   })
+
+  it('closes Toast component when x is clicked', async () => {
+    render(<Activate match={match} />)
+
+    fireEvent.click(screen.getByText('Activate'))
+
+    await waitForElement(() => screen.getByTestId('toast'))
+
+    fireEvent.click(screen.getByLabelText('Close'))
+
+    expect(screen.getByTestId('toast')).not.toBeVisible()
+  })
 })

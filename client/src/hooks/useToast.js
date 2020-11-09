@@ -5,11 +5,7 @@ const useToast = () => {
   const [severity, setSeverity] = useState('success')
   const [toastMsg, setToastMsg] = useState('')
 
-  const handleClose = (event, reason) => {
-    if (reason === 'clickaway') {
-      return
-    }
-
+  const handleClose = () => {
     setOpen(false)
   }
 
