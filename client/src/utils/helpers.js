@@ -41,10 +41,9 @@ export const removeLocalStorage = (key) => {
 }
 
 // authenticate user by passing data to cookie and localstorage during signin
-export const authenticate = (res, next) => {
+export const authenticate = (res) => {
   setCookie('token', res.data.token)
   setLocalStorage('user', res.data.user)
-  next()
 }
 
 // access user info from localstorage
@@ -53,7 +52,7 @@ export const isAuth = () => {
     const cookieChecked = getCookie('token')
     if (cookieChecked) {
       if (localStorage.getItem('user')) {
-        return JSON.parse(localStorage.getItem('user'))
+        return true
       } else {
         return false
       }

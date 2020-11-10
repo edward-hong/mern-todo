@@ -33,12 +33,9 @@ const Signin = () => {
       data: { email, password },
     })
       .then((response) => {
-        authenticate(response, () => {
-          setEmail('')
-        })
+        authenticate(response)
       })
       .catch((error) => {
-        console.error('SIGNIN ERROR', error.response.data)
         setSeverity('error')
         setToastMsg(error.response.data.error)
         setOpen(true)
@@ -47,7 +44,12 @@ const Signin = () => {
 
   return (
     <Container maxWidth="sm">
-      <Typography align="center" variant="h2" component="h1">
+      <Typography
+        data-testid="heading"
+        align="center"
+        variant="h2"
+        component="h1"
+      >
         Signin
       </Typography>
       <form onSubmit={handleSubmit}>
@@ -55,6 +57,7 @@ const Signin = () => {
           <Grid item xs={12}>
             <TextField
               fullWidth
+              inputProps={{ 'data-testid': 'email' }}
               label="Email"
               variant="outlined"
               size="small"
@@ -66,6 +69,7 @@ const Signin = () => {
           <Grid item xs={12}>
             <TextField
               fullWidth
+              inputProps={{ 'data-testid': 'password' }}
               label="Password"
               variant="outlined"
               size="small"
@@ -74,10 +78,16 @@ const Signin = () => {
               onChange={(e) => setPassword(e.target.value)}
             />
           </Grid>
-          <Button type="submit" fullWidth variant="contained" color="primary">
+          <Button
+            data-testid="submit"
+            type="submit"
+            fullWidth
+            variant="contained"
+            color="primary"
+          >
             Signin
           </Button>
-          <Typography align="right" component="p">
+          <Typography data-testid="forgot" align="right" component="p">
             Forgot Password? Click <Link to="/forgot">here</Link>
           </Typography>
         </Grid>
@@ -88,7 +98,7 @@ const Signin = () => {
         severity={severity}
         toastMsg={toastMsg}
       />
-      {isAuth() ? <Redirect to="/" /> : null}
+      {isAuth() && <Redirect to="/" />}
     </Container>
   )
 }
