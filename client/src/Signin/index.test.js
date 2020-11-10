@@ -37,7 +37,7 @@ describe('Signin', () => {
   it('handles server error', async () => {
     server.use(
       rest.post('/auth/signin', (req, res, ctx) => {
-        return res(ctx.status(500, 'Reset password failed'))
+        return res(ctx.status(500, 'Signin failed'))
       }),
     )
 
