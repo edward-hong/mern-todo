@@ -42,7 +42,6 @@ const Signup = () => {
         setOpen(true)
       })
       .catch((error) => {
-        console.error('SIGNUP ERROR', error.response.data)
         setSeverity('error')
         setToastMsg(error.response.data.error)
         setOpen(true)
@@ -51,7 +50,12 @@ const Signup = () => {
 
   return (
     <Container maxWidth="sm">
-      <Typography align="center" variant="h2" component="h1">
+      <Typography
+        data-testid="heading"
+        align="center"
+        variant="h2"
+        component="h1"
+      >
         Signup
       </Typography>
       <form onSubmit={handleSubmit}>
@@ -59,6 +63,7 @@ const Signup = () => {
           <Grid item xs={12}>
             <TextField
               fullWidth
+              inputProps={{ 'data-testid': 'name' }}
               label="Name"
               variant="outlined"
               size="small"
@@ -70,6 +75,7 @@ const Signup = () => {
           <Grid item xs={12}>
             <TextField
               fullWidth
+              inputProps={{ 'data-testid': 'email' }}
               label="Email"
               variant="outlined"
               size="small"
@@ -81,6 +87,7 @@ const Signup = () => {
           <Grid item xs={12}>
             <TextField
               fullWidth
+              inputProps={{ 'data-testid': 'password' }}
               label="Password"
               variant="outlined"
               size="small"
@@ -89,7 +96,13 @@ const Signup = () => {
               onChange={(e) => setPassword(e.target.value)}
             />
           </Grid>
-          <Button type="submit" fullWidth variant="contained" color="primary">
+          <Button
+            data-testid="submit"
+            type="submit"
+            fullWidth
+            variant="contained"
+            color="primary"
+          >
             Signup
           </Button>
         </Grid>
